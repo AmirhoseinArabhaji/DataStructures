@@ -3,7 +3,7 @@
 
 #include "linked_list.h"
 
-class Stack {
+class LLStack {
 public:
 
     void push(int const &);
@@ -19,24 +19,24 @@ private:
 
 };
 
-void Stack::push(int const &value) {
+void LLStack::push(int const &value) {
     linkedList.push(value);
 }
 
-void Stack::pop() {
+void LLStack::pop() {
     if (empty()) throw Underflow();
     linkedList.pop();
 }
 
-int Stack::top() {
+int LLStack::top() {
     linkedList.front();
 }
 
-bool Stack::empty() {
+bool LLStack::empty() {
     return linkedList.empty();
 }
 
-int Stack::search(int const &value) {
+int LLStack::search(int const &value) {
 
     int position = 0;
 
@@ -47,7 +47,7 @@ int Stack::search(int const &value) {
     return -1;
 }
 
-int Stack::size() {
+int LLStack::size() {
     return linkedList.size();
 }
 

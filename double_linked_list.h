@@ -55,7 +55,6 @@ private:
     DoubleNode *listTail;
     int listSize;
 
-    // List any additional private member functions you author here
 
     void eraseDoubleNode(DoubleNode* );
 

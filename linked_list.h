@@ -1,6 +1,7 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
+#include <iostream>
 #include "exception.h"
 
 class LinkedList {
@@ -18,43 +19,32 @@ public:
     };
 
     LinkedList();
-
-    LinkedList(LinkedList const &);
-
+    LinkedList(LinkedList const &list);
     ~LinkedList();
 
     //Accessors
 
     int size() const;
-
     int empty() const;
 
     int front() const;
-
     int back() const;
 
     Node *begin() const;
-
     Node *end() const;
 
     Node *find(int const &) const;
-
     int count(int const &) const;
 
     //Mutators
 
     int erase(int const &);
-
     void swap(LinkedList &);
 
     void push(int const &);
-
     void pop();
 
     void insertEnd(int const &);
-
-    void insert_after(Node *);
-
     void print() const;
 
 private:
@@ -62,6 +52,8 @@ private:
     Node *head;
     Node *tail;
     int length;
+
+    friend std::ostream &operator<<(std::ostream &, LinkedList const &);
 
 };
 
@@ -253,5 +245,15 @@ void LinkedList::print() const {
     std::cout << "nullptr" << std::endl;
 }
 
+std::ostream &operator<<(std::ostream &out, LinkedList const &list) {
 
-#endif //LINKED_LIST_LINKED_LIST_H
+    for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
+        out << ptr->value() << "->";
+    }
+    out << "0";
+
+
+    return out;
+}
+
+#endif //LINKED_LIST_H
