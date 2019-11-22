@@ -9,15 +9,8 @@ public:
     public:
         Node(int const & = int(), Node * = nullptr);
 
-        int getValue() const;
-
-        Node *getNext() const;
-
-        void setNext(Node *);
-
-        void setValue(int value);
-
-    private:
+        int value() const;
+        Node *next() const;
 
         int node_value;
         Node *next_node;
@@ -76,20 +69,12 @@ LinkedList::Node::Node(int const &value, LinkedList::Node *nn) : node_value(valu
 
 }
 
-int LinkedList::Node::getValue() const {
+int LinkedList::Node::value() const {
     return node_value;
 }
 
-LinkedList::Node *LinkedList::Node::getNext() const {
+LinkedList::Node *LinkedList::Node::next() const {
     return next_node;
-}
-
-void LinkedList::Node::setNext(Node *newnode) {
-    next_node = newnode;
-}
-
-void LinkedList::Node::setValue(int value) {
-    this->node_value = value;
 }
 
 
@@ -99,8 +84,8 @@ LinkedList::LinkedList() : length(0), head(nullptr), tail(nullptr) {
 
 LinkedList::LinkedList(LinkedList const &list) {
 
-    for (auto ptr = list.begin(); ptr != nullptr; ptr = ptr->getNext()) {
-        this->insertEnd(ptr->getValue());
+    for (auto ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
+        this->insertEnd(ptr->value());
     }
 
 }
@@ -120,11 +105,11 @@ int LinkedList::empty() const {
 }
 
 int LinkedList::front() const {
-    return head->getValue();
+    return head->value();
 }
 
 int LinkedList::back() const {
-    return tail->getValue();
+    return tail->value();
 }
 
 LinkedList::Node *LinkedList::begin() const {
@@ -137,8 +122,8 @@ LinkedList::Node *LinkedList::end() const {
 
 LinkedList::Node *LinkedList::find(int const &value) const {
 
-    for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->getNext()) {
-        if (ptr->getValue() == value) {
+    for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
+        if (ptr->value() == value) {
             return ptr;
         }
     }
@@ -150,8 +135,8 @@ int LinkedList::count(int const &value) const {
 
     int counter = 0;
 
-    for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->getNext()) {
-        if (ptr->getValue() == value) {
+    for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
+        if (ptr->value() == value) {
             counter++;
         }
     }
@@ -198,7 +183,7 @@ void LinkedList::pop() {
         head = nullptr;
         tail = nullptr;
     } else {
-        head = temp->getNext();
+        head = temp->next();
     }
 
     delete temp;
@@ -214,7 +199,7 @@ void LinkedList::insertEnd(int const &value) {
         head = newnode;
         tail = newnode;
     } else {
-        tail->setNext(newnode);
+        tail->next_node = newnode;
         tail = newnode;
     }
 }
@@ -228,22 +213,22 @@ int LinkedList::erase(int const &value) {
     Node *before = new Node(0, head);
 
     while (itr != nullptr) {
-        if (itr->getValue() == value) {
+        if (itr->value() == value) {
             Node *temp = itr;
 
             if (temp == head) {
                 if (head == tail) tail = nullptr;
-                head = temp->getNext();
-                before->setNext(temp->getNext());
-                itr = itr->getNext();
+                head = temp->next();
+                before->next_node = temp->next();
+                itr = itr->next();
             } else if (temp == tail) {
                 tail = before;
-                tail->setNext(nullptr);
+                tail->next_node = nullptr;
                 itr = nullptr;
             } else {
-                before->setNext(itr->getNext());
+                before->next_node = itr->next();
                 before = itr;
-                itr = itr->getNext();
+                itr = itr->next();
             }
 
             delete temp;
@@ -251,19 +236,19 @@ int LinkedList::erase(int const &value) {
             counter++;
         } else {
             before = itr;
-            itr = itr->getNext();
+            itr = itr->next();
         }
     }
 
-    if (before->getNext() == head) {
+    if (before->next() == head) {
         delete before;
     }
     return counter;
 }
 
 void LinkedList::print() const {
-    for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->getNext()) {
-        std::cout << ptr->getValue() << " --> ";
+    for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
+        std::cout << ptr->value() << " --> ";
     }
     std::cout << "nullptr" << std::endl;
 }

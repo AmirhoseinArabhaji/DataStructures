@@ -7,15 +7,10 @@ class Stack {
 public:
 
     void push(int const &);
-
     void pop();
-
     int top();
-
     bool empty();
-
     int search(int const &);
-
     int size();
 
 private:
@@ -45,8 +40,8 @@ int Stack::search(int const &value) {
 
     int position = 0;
 
-    for (auto ptr = linkedList.begin(); ptr != nullptr; ptr = ptr->getNext(), position++)
-        if (ptr->getValue() == value)
+    for (auto ptr = linkedList.begin(); ptr != nullptr; ptr = ptr->next(), position++)
+        if (ptr->value() == value)
             return position;
 
     return -1;
