@@ -13,8 +13,8 @@ public:
         int value() const;
         Node *next() const;
 
-        int node_value;
-        Node *next_node;
+        int nodeValue;
+        Node *nextNode;
 
     };
 
@@ -57,22 +57,44 @@ private:
 
 };
 
-LinkedList::Node::Node(int const &value, LinkedList::Node *nn) : node_value(value), next_node(nn) {
+/**
+ * constructor for creating a node
+ * @param value nodeValue
+ * @param nn nextNode
+ */
+
+LinkedList::Node::Node(int const &value, LinkedList::Node *nn) : nodeValue(value), nextNode(nn) {
 
 }
+
+/**
+ * @return node value
+ */
 
 int LinkedList::Node::value() const {
-    return node_value;
+    return nodeValue;
 }
+
+/**
+ * @return next node address
+ */
 
 LinkedList::Node *LinkedList::Node::next() const {
-    return next_node;
+    return nextNode;
 }
 
+/**
+ * constructor for creating a linked list
+ */
 
 LinkedList::LinkedList() : length(0), head(nullptr), tail(nullptr) {
 
 }
+
+/**
+ * this constructor receives a linked list and copis all of its elements to itself
+ * @param list
+ */
 
 LinkedList::LinkedList(LinkedList const &list) {
 
@@ -82,35 +104,73 @@ LinkedList::LinkedList(LinkedList const &list) {
 
 }
 
+/**
+ * delete every element in linked list by pop function when destructor called
+ */
+
 LinkedList::~LinkedList() {
     while (head != nullptr) {
         this->pop();
     }
 }
 
+/**
+ * @return size of linked list
+ */
+
 int LinkedList::size() const {
     return length;
 }
+
+/**
+ * @return true if linked list is empty
+ */
 
 int LinkedList::empty() const {
     return head == nullptr && tail == nullptr;
 }
 
+/**
+ * @throw Underflow exception if list is empty
+ * @return value of head
+ */
+
 int LinkedList::front() const {
+    if (empty()) throw Underflow();
     return head->value();
 }
 
+/**
+ * @throw Underflow exception if list is empty
+ * @return value of tail
+ */
+
 int LinkedList::back() const {
+    if (empty()) throw Underflow();
     return tail->value();
 }
+
+/**
+ * @return the beginning (head) address of linkedList
+ */
 
 LinkedList::Node *LinkedList::begin() const {
     return head;
 }
 
+/**
+ * @return the end address (tail) of linkedList
+ */
+
 LinkedList::Node *LinkedList::end() const {
     return tail;
 }
+
+/**
+ * @param value
+ * @return the address of first node whose value is equal to the input parameter value
+ * @return nullptr if not found
+ */
 
 LinkedList::Node *LinkedList::find(int const &value) const {
 
@@ -122,6 +182,11 @@ LinkedList::Node *LinkedList::find(int const &value) const {
 
     return nullptr;
 }
+
+/**
+ * @param value
+ * @return the number of elements whose value is equal to the input parameter value
+ */
 
 int LinkedList::count(int const &value) const {
 
@@ -135,6 +200,12 @@ int LinkedList::count(int const &value) const {
 
     return 0;
 }
+
+/**
+ * this function swap input linked list with this
+ * Works by swapping the parameters of the two DoubleLinkedList one by one
+ * @param list
+ */
 
 void LinkedList::swap(LinkedList &list) {
 
@@ -151,6 +222,11 @@ void LinkedList::swap(LinkedList &list) {
     list.length = temp_size;
 }
 
+/**
+ * creates new node with the given value in the input and insert it at the beginning of the list
+ * @param value
+ */
+
 void LinkedList::push(int const &value) {
 
     Node *newnode = new Node(value, head);
@@ -164,6 +240,11 @@ void LinkedList::push(int const &value) {
 
     length++;
 }
+
+/**
+ * removes the beginning node of linked list
+ * @throw Underflow exception if the list is empty
+ */
 
 void LinkedList::pop() {
 
@@ -183,6 +264,11 @@ void LinkedList::pop() {
 
 }
 
+/**
+ * create a new node with the given value in the input and insert it at the end of linked list
+ * @param value
+ */
+
 void LinkedList::insertEnd(int const &value) {
 
     Node *newnode = new Node(value, nullptr);
@@ -191,10 +277,16 @@ void LinkedList::insertEnd(int const &value) {
         head = newnode;
         tail = newnode;
     } else {
-        tail->next_node = newnode;
+        tail->nextNode = newnode;
         tail = newnode;
     }
 }
+
+/**
+ * remove all nodes whose value is equal to the input value
+ * @param value
+ * @return
+ */
 
 int LinkedList::erase(int const &value) {
 
@@ -211,14 +303,14 @@ int LinkedList::erase(int const &value) {
             if (temp == head) {
                 if (head == tail) tail = nullptr;
                 head = temp->next();
-                before->next_node = temp->next();
+                before->nextNode = temp->next();
                 itr = itr->next();
             } else if (temp == tail) {
                 tail = before;
-                tail->next_node = nullptr;
+                tail->nextNode = nullptr;
                 itr = nullptr;
             } else {
-                before->next_node = itr->next();
+                before->nextNode = itr->next();
                 before = itr;
                 itr = itr->next();
             }
