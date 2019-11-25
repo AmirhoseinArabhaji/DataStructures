@@ -3,6 +3,10 @@
 
 #include "linked_list.h"
 
+/**
+ * Stack class implementation using single linked list
+ */
+
 class LLStack {
 public:
 
