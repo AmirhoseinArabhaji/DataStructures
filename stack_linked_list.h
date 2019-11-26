@@ -4,54 +4,60 @@
 #include "linked_list.h"
 
 /**
- * Stack class implementation using single linked list
+ * Stack class implementation using template single linked list
  */
-
+template <typename A>
 class LLStack {
 public:
 
-    void push(int const &);
+    void push(A const &object);
     void pop();
     int top();
     bool empty();
-    int search(int const &);
+    int search(A const &object);
     int size();
 
 private:
 
-    LinkedList linkedList;
+    LinkedList<A> linkedList;
 
 };
 
-void LLStack::push(int const &value) {
-    linkedList.push(value);
+template <typename A>
+void LLStack<A>::push(A const &object) {
+    linkedList.push(object);
 }
 
-void LLStack::pop() {
+template <typename A>
+void LLStack<A>::pop() {
     if (empty()) throw Underflow();
     linkedList.pop();
 }
 
-int LLStack::top() {
+template <typename A>
+int LLStack<A>::top() {
     linkedList.front();
 }
 
-bool LLStack::empty() {
+template <typename A>
+bool LLStack<A>::empty() {
     return linkedList.empty();
 }
 
-int LLStack::search(int const &value) {
+template <typename A>
+int LLStack<A>::search(A const &object) {
 
     int position = 0;
 
     for (auto ptr = linkedList.begin(); ptr != nullptr; ptr = ptr->next(), position++)
-        if (ptr->value() == value)
+        if (ptr->object() == object)
             return position;
 
     return -1;
 }
 
-int LLStack::size() {
+template <typename A>
+int LLStack<A>::size() {
     return linkedList.size();
 }
 

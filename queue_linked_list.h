@@ -1,37 +1,50 @@
 #ifndef QUEUE_LINKED_LIST_H
 #define QUEUE_LINKED_LIST_H
 
+#include "linked_list.h"
+
+/**
+ * Queue class implementation using template single linked list
+ */
+
+template <typename A>
 class LLQueue {
 public:
 
     int size() const;
     bool empty() const;
     int front();
-    void push(int const &value);
+    void push(A const &object);
     void pop();
 
 private:
-    LinkedList linkedList;
+
+    LinkedList<A> linkedList;
 
 };
 
-int LLQueue::size() const {
+template <typename A>
+int LLQueue<A>::size() const {
     return linkedList.size();
 }
 
-bool LLQueue::empty() const {
+template <typename A>
+bool LLQueue<A>::empty() const {
     return linkedList.empty();
 }
 
-int LLQueue::front() {
+template <typename A>
+int LLQueue<A>::front() {
     return linkedList.front();
 }
 
-void LLQueue::push(int const &value) {
-    linkedList.insertEnd(value);
+template <typename A>
+void LLQueue<A>::push(A const &object) {
+    linkedList.insertEnd(object);
 }
 
-void LLQueue::pop() {
+template <typename A>
+void LLQueue<A>::pop() {
     linkedList.pop();
 }
 

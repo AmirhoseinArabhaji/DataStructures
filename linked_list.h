@@ -2,19 +2,22 @@
 #define LINKED_LIST_H
 
 #include <iostream>
+#include <algorithm>
 #include "exception.h"
 
+template <typename A>
 class LinkedList {
 public:
+    template <typename B>
     class Node {
     public:
-        Node(int const & = int(), Node * = nullptr);
+        Node(B = 0, Node<B> * = nullptr);
 
-        int value() const;
-        Node *next() const;
+        B object() const;
+        Node<B> *next() const;
 
-        int nodeValue;
-        Node *nextNode;
+        B nodeObject;
+        Node<B> *nextNode;
 
     };
 
@@ -25,35 +28,35 @@ public:
     //Accessors
 
     int size() const;
-    int empty() const;
+    bool empty() const;
 
-    int front() const;
-    int back() const;
+    A front() const;
+    A back() const;
 
-    Node *begin() const;
-    Node *end() const;
+    Node<A> *begin() const;
+    Node<A> *end() const;
 
-    Node *find(int const &) const;
+    Node<A> *find(int const &) const;
     int count(int const &) const;
 
     //Mutators
 
-    int erase(int const &);
+    int erase(const A &object);
     void swap(LinkedList &);
 
-    void push(int const &);
+    void push(const A &object);
     void pop();
 
-    void insertEnd(int const &);
+    void insertEnd(const A &object);
     void print() const;
 
 private:
 
-    Node *head;
-    Node *tail;
+    Node<A> *head;
+    Node<A> *tail;
     int length;
 
-    friend std::ostream &operator<<(std::ostream &, LinkedList const &);
+    friend std::ostream &operator<<(std::ostream &, LinkedList<A> const &list);
 
 };
 
@@ -63,7 +66,9 @@ private:
  * @param nn nextNode
  */
 
-LinkedList::Node::Node(int const &value, LinkedList::Node *nn) : nodeValue(value), nextNode(nn) {
+template <typename A>
+template <typename B>
+LinkedList<A>::Node<B>::Node(B obj, LinkedList::Node<B> *nn) : nodeObject(obj), nextNode(nn) {
 
 }
 
@@ -71,15 +76,19 @@ LinkedList::Node::Node(int const &value, LinkedList::Node *nn) : nodeValue(value
  * @return node value
  */
 
-int LinkedList::Node::value() const {
-    return nodeValue;
+template <typename A>
+template <typename B>
+B LinkedList<A>::Node<B>::object() const {
+    return nodeObject;
 }
 
 /**
  * @return next node address
  */
 
-LinkedList::Node *LinkedList::Node::next() const {
+template <typename A>
+template <typename B>
+typename LinkedList<A>::template Node<B> *LinkedList<A>::Node<B>::next() const {
     return nextNode;
 }
 
@@ -87,19 +96,21 @@ LinkedList::Node *LinkedList::Node::next() const {
  * constructor for creating a linked list
  */
 
-LinkedList::LinkedList() : length(0), head(nullptr), tail(nullptr) {
+template <typename A>
+LinkedList<A>::LinkedList() : length(0), head(nullptr), tail(nullptr) {
 
 }
 
 /**
- * this constructor receives a linked list and copis all of its elements to itself
+ * this constructor receives a linked list and copies all of its elements to itself
  * @param list
  */
 
-LinkedList::LinkedList(LinkedList const &list) {
+template <typename A>
+LinkedList<A>::LinkedList(LinkedList<A> const &list) {
 
     for (auto ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
-        this->insertEnd(ptr->value());
+        this->insertEnd(ptr->object());
     }
 
 }
@@ -108,7 +119,8 @@ LinkedList::LinkedList(LinkedList const &list) {
  * delete every element in linked list by pop function when destructor called
  */
 
-LinkedList::~LinkedList() {
+template <typename A>
+LinkedList<A>::~LinkedList() {
     while (head != nullptr) {
         this->pop();
     }
@@ -118,7 +130,8 @@ LinkedList::~LinkedList() {
  * @return size of linked list
  */
 
-int LinkedList::size() const {
+template <typename A>
+int LinkedList<A>::size() const {
     return length;
 }
 
@@ -126,7 +139,8 @@ int LinkedList::size() const {
  * @return true if linked list is empty
  */
 
-int LinkedList::empty() const {
+template <typename A>
+bool LinkedList<A>::empty() const {
     return head == nullptr && tail == nullptr;
 }
 
@@ -135,9 +149,10 @@ int LinkedList::empty() const {
  * @return value of head
  */
 
-int LinkedList::front() const {
+template <typename A>
+A LinkedList<A>::front() const {
     if (empty()) throw Underflow();
-    return head->value();
+    return head->object();
 }
 
 /**
@@ -145,16 +160,18 @@ int LinkedList::front() const {
  * @return value of tail
  */
 
-int LinkedList::back() const {
+template <typename A>
+A LinkedList<A>::back() const {
     if (empty()) throw Underflow();
-    return tail->value();
+    return tail->object();
 }
 
 /**
  * @return the beginning (head) address of linkedList
  */
 
-LinkedList::Node *LinkedList::begin() const {
+template <typename A>
+typename LinkedList<A>::template Node<A> *LinkedList<A>::begin() const {
     return head;
 }
 
@@ -162,7 +179,8 @@ LinkedList::Node *LinkedList::begin() const {
  * @return the end address (tail) of linkedList
  */
 
-LinkedList::Node *LinkedList::end() const {
+template <typename A>
+typename LinkedList<A>::template Node<A> *LinkedList<A>::end() const {
     return tail;
 }
 
@@ -172,10 +190,11 @@ LinkedList::Node *LinkedList::end() const {
  * @return nullptr if not found
  */
 
-LinkedList::Node *LinkedList::find(int const &value) const {
+template <typename A>
+typename LinkedList<A>::template Node<A> *LinkedList<A>::find(int const &value) const {
 
     for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
-        if (ptr->value() == value) {
+        if (ptr->object() == value) {
             return ptr;
         }
     }
@@ -188,17 +207,18 @@ LinkedList::Node *LinkedList::find(int const &value) const {
  * @return the number of elements whose value is equal to the input parameter value
  */
 
-int LinkedList::count(int const &value) const {
+template <typename A>
+int LinkedList<A>::count(int const &object) const {
 
     int counter = 0;
 
     for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
-        if (ptr->value() == value) {
+        if (ptr->object() == object) {
             counter++;
         }
     }
 
-    return 0;
+    return counter;
 }
 
 /**
@@ -207,19 +227,13 @@ int LinkedList::count(int const &value) const {
  * @param list
  */
 
-void LinkedList::swap(LinkedList &list) {
+template <typename A>
+void LinkedList<A>::swap(LinkedList &list) {
 
-    Node *temp_head = this->head;
-    Node *temp_tail = this->tail;
-    int temp_size = this->length;
+    std::swap(this->head, list.head);
+    std::swap(this->tail, list.tail);
+    std::swap(this->length, list.length);
 
-    this->head = list.head;
-    this->tail = list.tail;
-    this->length = list.length;
-
-    list.head = temp_head;
-    list.tail = temp_tail;
-    list.length = temp_size;
 }
 
 /**
@@ -227,9 +241,10 @@ void LinkedList::swap(LinkedList &list) {
  * @param value
  */
 
-void LinkedList::push(int const &value) {
+template <typename A>
+void LinkedList<A>::push(A const &object) {
 
-    Node *newnode = new Node(value, head);
+    Node<A> *newnode = new Node<A>(object, head);
 
     if (empty()) {
         head = newnode;
@@ -246,11 +261,12 @@ void LinkedList::push(int const &value) {
  * @throw Underflow exception if the list is empty
  */
 
-void LinkedList::pop() {
+template <typename A>
+void LinkedList<A>::pop() {
 
     if (empty()) throw Underflow();
 
-    Node *temp = head;
+    Node<A> *temp = head;
 
     if (head == tail) {
         head = nullptr;
@@ -269,9 +285,10 @@ void LinkedList::pop() {
  * @param value
  */
 
-void LinkedList::insertEnd(int const &value) {
+template <typename A>
+void LinkedList<A>::insertEnd(A const &object) {
 
-    Node *newnode = new Node(value, nullptr);
+    Node<A> *newnode = new Node<A>(object, nullptr);
 
     if (empty()) {
         head = newnode;
@@ -288,17 +305,18 @@ void LinkedList::insertEnd(int const &value) {
  * @return
  */
 
-int LinkedList::erase(int const &value) {
+template <typename A>
+int LinkedList<A>::erase(A const &object) {
 
     if (empty()) throw Underflow();
     int counter = 0;
 
-    Node *itr = head;
-    Node *before = new Node(0, head);
+    Node<A> *itr = head;
+    Node<A> *before = new Node<A>(0, head);
 
     while (itr != nullptr) {
-        if (itr->value() == value) {
-            Node *temp = itr;
+        if (itr->object() == object) {
+            Node<A> *temp = itr;
 
             if (temp == head) {
                 if (head == tail) tail = nullptr;
@@ -330,17 +348,19 @@ int LinkedList::erase(int const &value) {
     return counter;
 }
 
-void LinkedList::print() const {
+template <typename A>
+void LinkedList<A>::print() const {
     for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
-        std::cout << ptr->value() << " --> ";
+        std::cout << ptr->object() << " --> ";
     }
     std::cout << "nullptr" << std::endl;
 }
 
-std::ostream &operator<<(std::ostream &out, LinkedList const &list) {
+template <typename A>
+std::ostream &operator<<(std::ostream &out, LinkedList<A> const &list) {
 
     for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
-        out << ptr->value() << "->";
+        out << ptr->object() << "->";
     }
     out << "0";
 
