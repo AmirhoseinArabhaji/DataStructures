@@ -4,20 +4,22 @@
 #include <iostream>
 #include "exception.h"
 
+template <typename A>
 class DoubleLinkedList {
 public:
+    template <typename B>
     class DoubleNode {
     public:
-        DoubleNode(int const & = int(), DoubleNode * = nullptr, DoubleNode * = nullptr);
+        DoubleNode(B const & = 0, DoubleNode<B> * = nullptr, DoubleNode<B> * = nullptr);
 
-        int value() const;
+        B object() const;
 
-        DoubleNode *previous() const;
-        DoubleNode *next() const;
+        DoubleNode<B> *previous() const;
+        DoubleNode<B> *next() const;
 
-        int nodeValue;
-        DoubleNode *previousNode;
-        DoubleNode *nextNode;
+        int nodeObject;
+        DoubleNode<B> *previousNode;
+        DoubleNode<B> *nextNode;
     };
 
     DoubleLinkedList();
@@ -29,50 +31,101 @@ public:
     int size() const;
     bool empty() const;
 
-    int front() const;
-    int back() const;
+    A front() const;
+    A back() const;
 
-    DoubleNode *begin() const;
-    DoubleNode *end() const;
+    DoubleNode<A> *begin() const;
+    DoubleNode<A> *end() const;
 
-    DoubleNode *find(int const &) const;
-    int count(int const &) const;
+    DoubleNode<A> *find(A const &) const;
+    int count(A const &) const;
 
     // Mutators
 
     void swap(DoubleLinkedList &);
 
-    void pushFront(int const &);
-    void pushBack(int const &);
+    void pushFront(A const &);
+    void pushBack(A const &);
 
     void popFront();
     void popBack();
 
-    int erase(int const &);
+    int erase(A const &);
+    void print();
 
 private:
-    DoubleNode *listHead;
-    DoubleNode *listTail;
+    DoubleNode<A> *listHead;
+    DoubleNode<A> *listTail;
     int listSize;
 
 
-    void eraseDoubleNode(DoubleNode* );
+    void eraseDoubleNode(DoubleNode<A>* );
 
     // Friends
 
-    friend std::ostream &operator<<(std::ostream &, DoubleLinkedList const &);
+    //friend std::ostream &operator<<(std::ostream &, DoubleLinkedList const &);
 };
 
 /////////////////////////////////////////////////////////////////////////
 //                      Public member functions                        //
 /////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * constructor for creating a node
+ * @param obj nodeValue
+ * @param pn previousNode
+ * @param nn nextNode
+ */
+
+template <typename A>
+template <typename B>
+DoubleLinkedList<A>::DoubleNode<B>::DoubleNode(B const &obj, DoubleLinkedList::DoubleNode<B> *pn, DoubleLinkedList::DoubleNode<B> *nn) :
+        nodeObject(obj),
+        previousNode(pn),
+        nextNode(nn) {
+
+}
+
+/**
+ * @return the node value of this node
+ * @throw Underflow() exception if list is empty
+ */
+
+template <typename A>
+template <typename B>
+B DoubleLinkedList<A>::DoubleNode<B>::object() const {
+    if (this == nullptr) throw Underflow();
+    return nodeObject;
+}
+
+/**
+ * @return the address of previous node of this node
+ */
+
+template <typename A>
+template <typename B>
+typename DoubleLinkedList<A>::template DoubleNode<B> *DoubleLinkedList<A>::DoubleNode<B>::previous() const {
+    return previousNode;
+}
+
+/**
+ * @return the address of next node of this node
+ */
+
+template <typename A>
+template <typename B>
+typename DoubleLinkedList<A>::template DoubleNode<B> *DoubleLinkedList<A>::DoubleNode<B>::next() const {
+    return nextNode;
+}
+
 /**
  * constructor
  * make an object from DoubleLinkedList class
  */
 
-DoubleLinkedList::DoubleLinkedList() : listHead(nullptr), listTail(nullptr), listSize(0) {
+template <typename A>
+DoubleLinkedList<A>::DoubleLinkedList() : listHead(nullptr), listTail(nullptr), listSize(0) {
 
 }
 
@@ -82,10 +135,11 @@ DoubleLinkedList::DoubleLinkedList() : listHead(nullptr), listTail(nullptr), lis
  * @param list
  */
 
-DoubleLinkedList::DoubleLinkedList(DoubleLinkedList const &list) : listHead(nullptr), listTail(nullptr), listSize(0) {
+template <typename A>
+DoubleLinkedList<A>::DoubleLinkedList(DoubleLinkedList<A> const &list) : listHead(nullptr), listTail(nullptr), listSize(0) {
 
     for ( auto ptr = list.begin(); ptr != nullptr; ptr = ptr->next() ) // loop for iterating in this list
-        this->pushBack(ptr->nodeValue); // add elements from back of double linked list
+        this->pushBack(ptr->nodeObject); // add elements from back of double linked list
 
 }
 
@@ -93,7 +147,8 @@ DoubleLinkedList::DoubleLinkedList(DoubleLinkedList const &list) : listHead(null
  * delete every element in Double linked list by popFront function when destructor called
  */
 
-DoubleLinkedList::~DoubleLinkedList() {
+template <typename A>
+DoubleLinkedList<A>::~DoubleLinkedList() {
     while (listHead != nullptr) {
         this->popFront();
     }
@@ -103,15 +158,17 @@ DoubleLinkedList::~DoubleLinkedList() {
  * @return listSize
  */
 
-int DoubleLinkedList::size() const {
+template <typename A>
+int DoubleLinkedList<A>::size() const {
     return listSize;
 }
 
 /**
- * @return true when list is empty ...
+ * @return true when list is empty
  */
 
-bool DoubleLinkedList::empty() const {
+template <typename A>
+bool DoubleLinkedList<A>::empty() const {
     return this->listTail == nullptr && this->listHead == nullptr; // check both head and tail for empty
 }
 
@@ -120,9 +177,10 @@ bool DoubleLinkedList::empty() const {
  * @return nodeValue of listHead
  */
 
-int DoubleLinkedList::front() const {
+template <typename A>
+A DoubleLinkedList<A>::front() const {
     if (listHead == nullptr) throw Underflow();
-    return listHead->nodeValue;
+    return listHead->nodeObject;
 }
 
 /**
@@ -130,16 +188,18 @@ int DoubleLinkedList::front() const {
  * @return nodeValue of listTail
  */
 
-int DoubleLinkedList::back() const {
+template <typename A>
+A DoubleLinkedList<A>::back() const {
     if (listTail == nullptr) throw Underflow();
-    return listTail->nodeValue;
+    return listTail->nodeObject;
 }
 
 /**
  * @return the beginning address (listHead) of DoubleLinkedlist
  */
 
-DoubleLinkedList::DoubleNode *DoubleLinkedList::begin() const {
+template <typename A>
+typename DoubleLinkedList<A>::template DoubleNode<A> *DoubleLinkedList<A>::begin() const {
     return listHead;
 }
 
@@ -147,20 +207,22 @@ DoubleLinkedList::DoubleNode *DoubleLinkedList::begin() const {
  * @return the end address (listTail) of DoubleLinkedlist
  */
 
-DoubleLinkedList::DoubleNode *DoubleLinkedList::end() const {
+template <typename A>
+typename DoubleLinkedList<A>::template DoubleNode<A> *DoubleLinkedList<A>::end() const {
     return listTail;
 }
 
 /**
- * @param value
+ * @param object
  * @return the address of first node whose value is equal to the input parameter value
  * if not found return nullptr
  */
 
-DoubleLinkedList::DoubleNode *DoubleLinkedList::find(int const &value) const {
+template <typename A>
+typename DoubleLinkedList<A>::template DoubleNode<A> *DoubleLinkedList<A>::find(A const &object) const {
 
     for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) // loop for iterating in list
-        if (ptr->nodeValue == value)
+        if (ptr->nodeObject == object)
             return ptr;
 
     return nullptr;
@@ -171,12 +233,13 @@ DoubleLinkedList::DoubleNode *DoubleLinkedList::find(int const &value) const {
  * @Return the number of elements whose value is equal to the input parameter value
  */
 
-int DoubleLinkedList::count(int const &value) const {
+template <typename A>
+int DoubleLinkedList<A>::count(A const &object) const {
 
     int counter = 0;
 
     for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) // loop for iterating in list
-        if (ptr->nodeValue == value)
+        if (ptr->nodeObject == object)
             counter++;
 
     return counter;
@@ -189,31 +252,24 @@ int DoubleLinkedList::count(int const &value) const {
  * @param list
  */
 
-void DoubleLinkedList::swap(DoubleLinkedList &list) {
+template <typename A>
+void DoubleLinkedList<A>::swap(DoubleLinkedList<A> &list) {
 
-    DoubleNode* tempHead = this->listHead;
-    DoubleNode* tempTail = this->listTail;
-    int tempSize = this->listSize;
-
-    this->listHead = list.listHead;
-    this->listTail = list.listTail;
-    this->listSize = list.listSize;
-
-    list.listHead = tempHead;
-    list.listTail = tempTail;
-    list.listSize = tempSize;
-
+    std::swap(this->listHead, list.listHead);
+    std::swap(this->listTail, list.listTail);
+    std::swap(this->listSize, list.listSize);
 
 }
 
 /**
  * Creates a new node with the given value in the input and inserts it at the beginning of the list
- * @param value
+ * @param object
  */
 
-void DoubleLinkedList::pushFront(int const &value) {
+template <typename A>
+void DoubleLinkedList<A>::pushFront(A const &object) {
 
-    DoubleNode* newnode = new DoubleNode(value, nullptr, listHead); // create a new node for adding at front of the list
+    DoubleNode<A>* newnode = new DoubleNode<A>(object, nullptr, listHead); // create a new node for adding at front of the list
 
     if (listHead == nullptr) { // check if list is empty
         listHead = newnode;
@@ -228,12 +284,13 @@ void DoubleLinkedList::pushFront(int const &value) {
 
 /**
  * Creates a new node with the given value in the input and inserts it at the end of the list
- * @param value
+ * @param object
  */
 
-void DoubleLinkedList::pushBack(int const &value) {
+template <typename A>
+void DoubleLinkedList<A>::pushBack(A const &object) {
 
-    DoubleNode *newnode = new DoubleNode(value, listTail, nullptr); // create a new node for adding at end of list
+    DoubleNode<A> *newnode = new DoubleNode<A>(object, listTail, nullptr); // create a new node for adding at end of list
 
     if (listTail == nullptr) { // check if list is empty
         listTail = newnode;
@@ -251,11 +308,12 @@ void DoubleLinkedList::pushBack(int const &value) {
  * @throw Underflow() exception if the list is empty
  */
 
-void DoubleLinkedList::popFront() {
+template <typename A>
+void DoubleLinkedList<A>::popFront() {
 
     if (listHead == nullptr) throw Underflow();
 
-    DoubleNode *temp = listHead;
+    DoubleNode<A> *temp = listHead;
 
     if (listHead == listTail) { // check if list has one node
         listTail = nullptr;
@@ -276,11 +334,12 @@ void DoubleLinkedList::popFront() {
  * @throw Underflow() if the list is empty
  */
 
-void DoubleLinkedList::popBack() {
+template <typename A>
+void DoubleLinkedList<A>::popBack() {
 
     if (listTail == nullptr) throw Underflow();
 
-    DoubleNode *temp = listTail;
+    DoubleNode<A> *temp = listTail;
 
     if (listHead == listTail) { // check if list has one node
         listTail = nullptr;
@@ -298,19 +357,20 @@ void DoubleLinkedList::popBack() {
 
 /**
  * Removes all nodes whose value is equal to the input parameter value
- * @param value
+ * @param object
  * @return the number of removed nodes in DoubleLinkedList
  */
 
-int DoubleLinkedList::erase(int const &value) {
+template <typename A>
+int DoubleLinkedList<A>::erase(A const &object) {
 
     int counter = 0;
 
-    DoubleNode* node = listHead;
-    DoubleNode* nextNode;
+    DoubleNode<A>* node = listHead;
+    DoubleNode<A>* nextNode;
 
     while (node != nullptr) {
-        if (node->nodeValue == value) {
+        if (node->nodeObject == object) {
             nextNode = node->nextNode;
             eraseDoubleNode(node);
             node = nextNode;
@@ -324,46 +384,6 @@ int DoubleLinkedList::erase(int const &value) {
     return counter;
 }
 
-/**
- * constructor for creating a node
- * @param nv nodeValue
- * @param pn previousNode
- * @param nn nextNode
- */
-
-DoubleLinkedList::DoubleNode::DoubleNode(int const &nv, DoubleLinkedList::DoubleNode *pn, DoubleLinkedList::DoubleNode *nn) :
-        nodeValue(nv),
-        previousNode(pn),
-        nextNode(nn) {
-
-}
-
-/**
- * @return the node value of this node
- * @throw Underflow() exception if list is empty
- */
-
-int DoubleLinkedList::DoubleNode::value() const {
-    if (this == nullptr) throw Underflow();
-    return nodeValue;
-}
-
-/**
- * @return the address of previous node of this node
- */
-
-DoubleLinkedList::DoubleNode *DoubleLinkedList::DoubleNode::previous() const {
-    return previousNode;
-}
-
-/**
- * @return the address of next node of this node
- */
-
-DoubleLinkedList::DoubleNode *DoubleLinkedList::DoubleNode::next() const {
-    return nextNode;
-}
-
 /////////////////////////////////////////////////////////////////////////
 //                      Private member functions                       //
 /////////////////////////////////////////////////////////////////////////
@@ -373,7 +393,8 @@ DoubleLinkedList::DoubleNode *DoubleLinkedList::DoubleNode::next() const {
  * @param node
  */
 
-void DoubleLinkedList::eraseDoubleNode(DoubleLinkedList::DoubleNode* node) {
+template <typename A>
+void DoubleLinkedList<A>::eraseDoubleNode(DoubleLinkedList<A>::DoubleNode<A>* node) {
 
     if (listHead == listTail){ // check if list has one node or more
         listHead = nullptr;
@@ -392,27 +413,38 @@ void DoubleLinkedList::eraseDoubleNode(DoubleLinkedList::DoubleNode* node) {
     delete node;
 }
 
+template<typename A>
+void DoubleLinkedList<A>::print() {
+
+    std::cout << "Head";
+    for (auto *ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
+        std::cout << "->" << ptr->object();
+    }
+    std::cout << "->Tail" << std::endl;
+
+}
+
 /////////////////////////////////////////////////////////////////////////
 //                               Friends                               //
 /////////////////////////////////////////////////////////////////////////
 
-std::ostream &operator<<(std::ostream &out, DoubleLinkedList const &list) {
-    out << "head";
-
-    // print list from start to end
-    for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
-        out << "->" << ptr->value();
-    }
-    out << "->0" << std::endl << "tail";
-
-    // print list from end to start
-    for (DoubleLinkedList::DoubleNode *ptr = list.end(); ptr != nullptr; ptr = ptr->previous()) {
-        out << "->" << ptr->value();
-    }
-    out << "->0";
-
-    return out;
-}
+//std::ostream &operator<<(std::ostream &out, DoubleLinkedList const &list) {
+//    out << "head";
+//
+//    // print list from start to end
+//    for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
+//        out << "->" << ptr->object();
+//    }
+//    out << "->0" << std::endl << "tail";
+//
+//    // print list from end to start
+//    for (DoubleLinkedList::DoubleNode *ptr = list.end(); ptr != nullptr; ptr = ptr->previous()) {
+//        out << "->" << ptr->object();
+//    }
+//    out << "->0";
+//
+//    return out;
+//}
 
 
 #endif
