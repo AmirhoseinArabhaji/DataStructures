@@ -11,7 +11,7 @@ public:
     template <typename B>
     class Node {
     public:
-        Node(B = 0, Node<B> * = nullptr);
+        Node(B const & = 0, Node<B> * = nullptr);
 
         B object() const;
         Node<B> *next() const;
@@ -50,13 +50,16 @@ public:
     void insertEnd(const A &object);
     void print() const;
 
+    Node<A> *getNthNode(int const &) const;
+    A getIndex(int const &) const;
+
 private:
 
     Node<A> *head;
     Node<A> *tail;
-    int length;
+    int listSize;
 
-    friend std::ostream &operator<<(std::ostream &, LinkedList<A> const &list);
+//    friend std::ostream &operator<<(std::ostream &, LinkedList<A> const &list);
 
 };
 
@@ -68,7 +71,7 @@ private:
 
 template <typename A>
 template <typename B>
-LinkedList<A>::Node<B>::Node(B obj, LinkedList::Node<B> *nn) : nodeObject(obj), nextNode(nn) {
+LinkedList<A>::Node<B>::Node(B const &obj, LinkedList::Node<B> *nn) : nodeObject(obj), nextNode(nn) {
 
 }
 
@@ -79,6 +82,7 @@ LinkedList<A>::Node<B>::Node(B obj, LinkedList::Node<B> *nn) : nodeObject(obj), 
 template <typename A>
 template <typename B>
 B LinkedList<A>::Node<B>::object() const {
+    if (this == nullptr) throw Underflow();
     return nodeObject;
 }
 
@@ -97,7 +101,7 @@ typename LinkedList<A>::template Node<B> *LinkedList<A>::Node<B>::next() const {
  */
 
 template <typename A>
-LinkedList<A>::LinkedList() : length(0), head(nullptr), tail(nullptr) {
+LinkedList<A>::LinkedList() : listSize(0), head(nullptr), tail(nullptr) {
 
 }
 
@@ -132,7 +136,7 @@ LinkedList<A>::~LinkedList() {
 
 template <typename A>
 int LinkedList<A>::size() const {
-    return length;
+    return listSize;
 }
 
 /**
@@ -232,7 +236,7 @@ void LinkedList<A>::swap(LinkedList &list) {
 
     std::swap(this->head, list.head);
     std::swap(this->tail, list.tail);
-    std::swap(this->length, list.length);
+    std::swap(this->listSize, list.listSize);
 
 }
 
@@ -253,7 +257,7 @@ void LinkedList<A>::push(A const &object) {
         head = newnode;
     }
 
-    length++;
+    listSize++;
 }
 
 /**
@@ -276,7 +280,7 @@ void LinkedList<A>::pop() {
     }
 
     delete temp;
-    length--;
+    listSize--;
 
 }
 
@@ -297,6 +301,8 @@ void LinkedList<A>::insertEnd(A const &object) {
         tail->nextNode = newnode;
         tail = newnode;
     }
+
+    listSize++;
 }
 
 /**
@@ -334,7 +340,7 @@ int LinkedList<A>::erase(A const &object) {
             }
 
             delete temp;
-            length--;
+            listSize--;
             counter++;
         } else {
             before = itr;
@@ -356,16 +362,55 @@ void LinkedList<A>::print() const {
     std::cout << "nullptr" << std::endl;
 }
 
-template <typename A>
-std::ostream &operator<<(std::ostream &out, LinkedList<A> const &list) {
+//template <typename A>
+//std::ostream &operator<<(std::ostream &out, LinkedList<A> const &list) {
+//
+//    for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
+//        out << ptr->object() << "->";
+//    }
+//    out << "0";
+//
+//
+//    return out;
+//}
 
-    for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
-        out << ptr->object() << "->";
+/**
+ * this function gives Nth index of linked list
+ * @throw OutOfRange if the index is negative or is bigger than size of linked list
+ * @tparam A
+ * @param index
+ * @return
+ */
+
+template<typename A>
+typename LinkedList<A>::template Node<A> *LinkedList<A>::getNthNode(int const &index) const{
+
+    if (index < 0 || index >= size())
+        throw OutOfRange();
+
+    Node<A> *node = head;
+
+    for (int i = 1; i <= index; i++) {
+        node = node->next();
     }
-    out << "0";
 
+    return node;
+}
 
-    return out;
+template<typename A>
+A LinkedList<A>::getIndex(int const &index) const {
+
+    if (index < 0 || index >= size())
+        throw OutOfRange();
+
+    Node<A> *node = head;
+
+    for (int i = 1; i <= index; i++) {
+        node = node->next();
+    }
+
+    return node->nodeObject;
+
 }
 
 #endif //LINKED_LIST_H

@@ -36,7 +36,7 @@ void LLStack<A>::pop() {
 
 template <typename A>
 int LLStack<A>::top() {
-    linkedList.front();
+    return linkedList.front();
 }
 
 template <typename A>
