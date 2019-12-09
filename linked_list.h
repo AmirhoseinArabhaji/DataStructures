@@ -189,16 +189,16 @@ typename LinkedList<A>::template Node<A> *LinkedList<A>::end() const {
 }
 
 /**
- * @param value
+ * @param object
  * @return the address of first node whose value is equal to the input parameter value
  * @return nullptr if not found
  */
 
 template <typename A>
-typename LinkedList<A>::template Node<A> *LinkedList<A>::find(int const &value) const {
+typename LinkedList<A>::template Node<A> *LinkedList<A>::find(int const &object) const {
 
     for (auto ptr = this->begin(); ptr != nullptr; ptr = ptr->next()) {
-        if (ptr->object() == value) {
+        if (ptr->object() == object) {
             return ptr;
         }
     }

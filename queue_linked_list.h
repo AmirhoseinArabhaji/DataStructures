@@ -13,7 +13,7 @@ public:
 
     int size() const;
     bool empty() const;
-    int front();
+    A front();
     void push(A const &object);
     void pop();
 
@@ -34,7 +34,7 @@ bool LLQueue<A>::empty() const {
 }
 
 template <typename A>
-int LLQueue<A>::front() {
+A LLQueue<A>::front() {
     return linkedList.front();
 }
 
