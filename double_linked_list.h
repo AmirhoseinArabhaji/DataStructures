@@ -1,8 +1,7 @@
 #ifndef DOUBLE_LINKED_LIST_H
 #define DOUBLE_LINKED_LIST_H
 
-#include <iostream>
-#include "exception.h"
+#include "header.h"
 
 template <typename A>
 class DoubleLinkedList {
@@ -17,7 +16,7 @@ public:
         DoubleNode<B> *previous() const;
         DoubleNode<B> *next() const;
 
-        int nodeObject;
+        B nodeObject;
         DoubleNode<B> *previousNode;
         DoubleNode<B> *nextNode;
     };
@@ -50,6 +49,9 @@ public:
     void popFront();
     void popBack();
 
+    A getIndex(int const &index) const;
+    DoubleNode<A> *getNthNode(int const &) const;
+
     int erase(A const &);
     void print();
 
@@ -58,12 +60,8 @@ private:
     DoubleNode<A> *listTail;
     int listSize;
 
-
     void eraseDoubleNode(DoubleNode<A>* );
 
-    // Friends
-
-    //friend std::ostream &operator<<(std::ostream &, DoubleLinkedList const &);
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -424,27 +422,46 @@ void DoubleLinkedList<A>::print() {
 
 }
 
-/////////////////////////////////////////////////////////////////////////
-//                               Friends                               //
-/////////////////////////////////////////////////////////////////////////
+/**
+ * @tparam A
+ * @param index
+ * @return the object of Nth node in list
+ */
 
-//std::ostream &operator<<(std::ostream &out, DoubleLinkedList const &list) {
-//    out << "head";
-//
-//    // print list from start to end
-//    for (auto *ptr = list.begin(); ptr != nullptr; ptr = ptr->next()) {
-//        out << "->" << ptr->object();
-//    }
-//    out << "->0" << std::endl << "tail";
-//
-//    // print list from end to start
-//    for (DoubleLinkedList::DoubleNode *ptr = list.end(); ptr != nullptr; ptr = ptr->previous()) {
-//        out << "->" << ptr->object();
-//    }
-//    out << "->0";
-//
-//    return out;
-//}
+template<typename A>
+A DoubleLinkedList<A>::getIndex(int const &index) const {
+
+    if (index < 0 || index >= size())
+        throw OutOfRange();
+
+    DoubleNode<A> *node = listHead;
+
+    for (int i = 1; i <= index; i++) {
+        node = node->next();
+    }
+
+    return node->nodeObject;
+
+}
+
+
+template<typename A>
+typename DoubleLinkedList<A>::template DoubleNode<A> *DoubleLinkedList<A>::getNthNode(int const &index) const{
+
+    if (index < 0 || index >= size())
+        throw OutOfRange();
+
+    if (empty())
+        return nullptr;
+
+    DoubleNode<A> *node = listHead;
+
+    for (int i = 1; i <= index; i++) {
+        node = node->next();
+    }
+
+    return node;
+}
 
 
 #endif

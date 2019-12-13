@@ -40,7 +40,7 @@ A LLQueue<A>::front() {
 
 template <typename A>
 void LLQueue<A>::push(A const &object) {
-    linkedList.insertEnd(object);
+    linkedList.pushBack(object);
 }
 
 template <typename A>

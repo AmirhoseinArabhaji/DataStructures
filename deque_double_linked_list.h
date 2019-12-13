@@ -1,6 +1,8 @@
 #ifndef DEQUE_DOUBLE_LINKED_LIST_H
 #define DEQUE_DOUBLE_LINKED_LIST_H
 
+#include "double_linked_list.h"
+
 template<typename A>
 class DLLDeque {
 public:
